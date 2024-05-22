@@ -17,6 +17,11 @@ public class MercuryComponent : MonoBehaviour
         _stateManager = new StateManager(_controller);
     }
 
+    private void Update()
+    {
+        _stateManager.Update();
+    }
+
     private void OnEnable()
     {
         _animator = GetComponent<Animator>();
@@ -34,13 +39,10 @@ public class MercuryComponent : MonoBehaviour
         return _animator;
     }
 
-    public AnimationState Play(AnimationClip clip)
+    public AnimationState Play(AnimationClip clip,string customName)
     {
-
-        _stateManager.Register(clip);
-        AnimationState state = _stateManager.GetState(clip);
-        Debug.Log(state == null);
-        state.Play();
+        AnimationState state = _stateManager.Register(clip,customName);
+        _stateManager.TransitState(customName);
         return state;
     }
 }

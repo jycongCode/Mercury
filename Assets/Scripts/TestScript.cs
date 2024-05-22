@@ -1,25 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Playables;
+using UnityEngine.Animations;
+using UnityEditor;
 public class TestScript : MonoBehaviour
 {
     // Start is called before the first frame update
     MercuryComponent mercury;
-    public AnimationClip clip;
-    public float Speed = 1.0f;
-    AnimationState state;
+    public AnimationClip IdleClip;
+    public AnimationClip walkClip;
     void Start()
     {
         mercury = GetComponent<MercuryComponent>();
-        //Debug.Log(mercury == null);
-        state = mercury.Play(clip);
+        mercury.Play(IdleClip, "Idle");
+    }
+
+    private void OnDisable()
+    {
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        state.Speed = this.Speed;
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            mercury.Play(walkClip, "Walk");
+        }
     }
+    
 }
