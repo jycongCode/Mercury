@@ -16,17 +16,12 @@ public class TestScript : MonoBehaviour
         mercury.Play(IdleClip, "Idle");
     }
 
-    private void OnDisable()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            mercury.Play(walkClip, "Walk");
+            mercury.Play(walkClip, "Walk",EnterType.FromStart);
         }
     }
     

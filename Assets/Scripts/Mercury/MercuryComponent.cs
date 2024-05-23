@@ -8,41 +8,28 @@ public class MercuryComponent : MonoBehaviour
 {
     [SerializeField, Tooltip("Animator to controll the gameobject")]
     private Animator _animator;
-    private PlayableController _controller;
-    private StateManager _stateManager;
-
-    private void Awake()
-    {
-        _controller = new PlayableController(this);
-        _stateManager = new StateManager(_controller);
-    }
-
+    private AnimationStateManager _stateManager;
+    private bool _activated = false;
     private void Update()
     {
-        _stateManager.Update();
-    }
-
-    private void OnEnable()
-    {
-        _animator = GetComponent<Animator>();
-        _controller.CreateGraph();
+        if(_activated)_stateManager.Update();
     }
 
     private void OnDisable()
     {
+        _activated = false;
         _stateManager.Clear();
-        _controller.DestroyGraph();
     }
 
-    public Animator GetAnimator()
+    public AnimationState Play(AnimationClip clip,string customName="",EnterType enterType=EnterType.Regular)
     {
-        return _animator;
-    }
-
-    public AnimationState Play(AnimationClip clip,string customName)
-    {
-        AnimationState state = _stateManager.Register(clip,customName);
-        _stateManager.TransitState(customName);
+        if (!_activated)
+        {
+            _stateManager = AnimationStateManager.Create(_animator, gameObject.name);
+            _activated = true;
+        }
+        AnimationState state = AnimationState.CreateState(_stateManager, clip, customName,enterType);
+        _stateManager.TransitState(state.name);
         return state;
     }
 }
