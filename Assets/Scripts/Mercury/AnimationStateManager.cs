@@ -58,7 +58,4 @@ public class AnimationStateManager:StateManagerBase<string,AnimationState>
         _currentState = stateDictionary.GetValue(key);
         _currentState.OnEnter();
     }
-
-
-    
 }
