@@ -7,13 +7,13 @@ public enum EnterType
     FromStart,
     Regular
 }
+
 public class AnimationState : IState
 {
-    
     public AnimationStateManager stateManager;
     public readonly string name;
     public readonly AnimationClip clip;
-    private double _fadeInTime = 0.25d;
+    private double _fadeInTime = 0.5d;
     private double _fadeoutTime = 1d;
     public EnterType enterType = EnterType.Regular;
     private const float WEIGHT_THRESHOLD = 0.01f;
@@ -59,6 +59,7 @@ public class AnimationState : IState
     public void OnEnter()
     {
         _currentWeight = 0f;
+        NormalizedTime = 0f;
         stateManager.controller.LoadState(this, 0f);
         stateManager.controller.Graph.Play();
     }

@@ -50,7 +50,7 @@ public class PlayableController
     public void LoadState(AnimationState state,float startWeight)
     {
         if (_usedPortNum >= MaxMixerInput) return;
-        
+        //Debug.Log("here");
         AnimationClipPlayable clipPlayable = AnimationClipPlayable.Create(_graph, state.clip);
         int portIndex = 0;
         while(portIndex<MaxMixerInput)
@@ -127,13 +127,13 @@ public class PlayableController
                             _graph.DestroyPlayable(playableDictionary.GetValue(tmp).source);
                             playableDictionary.UnRegister(tmp);
                             portHash[port] = null;
-                            --_usedPortNum;
                         }
                         else
                         {
                             _graph.DestroyPlayable(_mixer.GetInput(port));
                         }
-                        
+                        --_usedPortNum;
+
                     }
                     else
                     {

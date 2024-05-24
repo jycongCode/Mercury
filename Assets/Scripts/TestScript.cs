@@ -14,6 +14,8 @@ public class TestScript : MonoBehaviour
     {
         mercury = GetComponent<MercuryComponent>();
         mercury.Play(IdleClip, "Idle");
+        LinkedList<int> t = new LinkedList<int>();
+        Debug.Log(t.First == null);
     }
 
     // Update is called once per frame
@@ -21,7 +23,7 @@ public class TestScript : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            mercury.Play(walkClip, "Walk",EnterType.FromStart);
+            mercury.Play(walkClip, "Walk",EnterType.Regular);
         }
     }
     
