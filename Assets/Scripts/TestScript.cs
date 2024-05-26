@@ -10,20 +10,29 @@ public class TestScript : MonoBehaviour
     MercuryComponent mercury;
     public AnimationClip IdleClip;
     public AnimationClip walkClip;
+    [Range(0f, 1f)]
+    public double NormalizedTime;
+    AnimationState state;
     void Start()
     {
         mercury = GetComponent<MercuryComponent>();
-        mercury.Play(IdleClip, "Idle");
-        LinkedList<int> t = new LinkedList<int>();
-        Debug.Log(t.First == null);
+        state = mercury.Play(walkClip);
+        state.Events.AddEvent("Half",0.5f,OnHalfRaised);
+        state.Speed = 1;
+    }
+
+    public void OnHalfRaised()
+    {
+        Debug.Log($"OnHalfRaised : time{state.NormalizedTime}");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space))
         {
-            mercury.Play(walkClip, "Walk",EnterType.Regular);
+            state.NormalizedTime = Random.Range(0f, 1f);
+            Debug.Log(state.NormalizedTime);
         }
     }
     

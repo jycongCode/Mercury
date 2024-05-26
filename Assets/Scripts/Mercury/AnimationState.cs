@@ -11,10 +11,11 @@ public enum EnterType
 public class AnimationState : IState
 {
     public AnimationStateManager stateManager;
+    public EventManager Events;
     public readonly string name;
     public readonly AnimationClip clip;
     private double _fadeInTime = 0.5d;
-    private double _fadeoutTime = 1d;
+    private double _fadeoutTime = 0.85d;
     public EnterType enterType = EnterType.Regular;
     private const float WEIGHT_THRESHOLD = 0.01f;
 
@@ -25,13 +26,22 @@ public class AnimationState : IState
     public double Speed
     {
         get { return stateManager.controller.GetPlayableSpeed(this); }
-        set { stateManager.controller.SetPlayableSpeed(this, value); }
+        set { 
+            stateManager.controller.SetPlayableSpeed(this, value);
+            Events.PlayDirection = value >= 0 ? 1 : -1;
+        }
     }
 
     public double NormalizedTime
     {
         get { return stateManager.controller.GetPlayableNormalizedTime(this); }
-        set { stateManager.controller.SetPlayableNormalizedTime(this, value); }
+        set {
+                if (Speed * value >= 0)
+                {
+                    stateManager.controller.SetPlayableNormalizedTime(this, value);
+                    Events.ReWind((float)value);
+                }
+            }
     }
 
     public double Duration
@@ -42,6 +52,7 @@ public class AnimationState : IState
     private AnimationState(AnimationStateManager stateManager, AnimationClip clip, string name,EnterType enterType)
     {
         this.stateManager = stateManager;
+        this.Events = new EventManager(Speed>0?1:-1);
         this.clip = clip;
         this.name = name;
         this.enterType = enterType;
@@ -62,6 +73,7 @@ public class AnimationState : IState
         NormalizedTime = 0f;
         stateManager.controller.LoadState(this, 0f);
         stateManager.controller.Graph.Play();
+        Events.ReWind(0f);
     }
 
     private float LinearFunction(float start,float end,float x)
@@ -71,6 +83,7 @@ public class AnimationState : IState
 
     public void OnUpdate()
     {
+        Events.Update((float)(NormalizedTime));
         if (_currentWeight >= 1f) return;
         float weight = _fadeInTime <= WEIGHT_THRESHOLD ? 1f : LinearFunction(0f, 1f, (float)(NormalizedTime / _fadeInTime));
         if (Mathf.Abs(1f-weight) < WEIGHT_THRESHOLD) _currentWeight=weight= 1f;
@@ -79,6 +92,6 @@ public class AnimationState : IState
 
     public void OnExit()
     {
-        
+
     }
 }

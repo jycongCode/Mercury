@@ -22,14 +22,29 @@ namespace Animancer.Examples.Basics
 
         [SerializeField] private AnimancerComponent _Animancer;
         [SerializeField] private AnimationClip _Animation;
-
+        private AnimancerState state;
         /************************************************************************************************************************/
 
         private void OnEnable()
         {
-            _Animancer.Play(_Animation);
+            state = _Animancer.Play(_Animation);
+            state.Speed = -1;
+            state.Events.OnEnd += End;
         }
 
+        public void End()
+        {
+            Debug.Log("End");
+        }
+
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                state.Speed *= -1;
+            }
+            Debug.Log(state.NormalizedTime);
+        }
         /************************************************************************************************************************/
     }
 }
