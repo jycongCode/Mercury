@@ -8,21 +8,65 @@ public enum EnterType
     Regular
 }
 
-public class AnimationState : IState
+public class MercuryState : IState
 {
     public AnimationStateManager stateManager;
-    public EventManager Events;
+    public MercuryEventManager Events;
     public readonly string name;
     public readonly AnimationClip clip;
     private double _fadeInTime = 0.5d;
     private double _fadeoutTime = 0.85d;
     public EnterType enterType = EnterType.Regular;
-    private const float WEIGHT_THRESHOLD = 0.01f;
+    
+    private float _Weight = 0f;
+    public float Weight
+    {
+        get => _Weight;
+        set
+        {
+            _Weight = value;
+        }
+    }
 
+    private float _TargetWeight = 0f;
+    public float TargetWeight
+    {
+        get=> _TargetWeight;
+        set
+        {
+            _TargetWeight = value;
+        }
+    }
 
-    private float _currentWeight = 0f;
-    public float CurrentWeight { get { return _currentWeight; } }
+    private float _FadeSpeed = 0f;
+    public float FadeSpeed
+    {
+        get => _FadeSpeed;
+        set
+        {
+            _FadeSpeed = value;
+        }
+    }
 
+    public bool isUpdate = false;
+    public float FadeTime = 0f;
+    public void Update()
+    {
+        if(isUpdate)
+        {
+            FadeTime -= MercuryPlayable.DeltaTime;
+            if(FadeTime<0f)
+            {
+                _Weight = _TargetWeight;
+            }
+            else
+            {
+                _FadeSpeed = (_TargetWeight - _Weight) / FadeTime;
+                _Weight += _FadeSpeed * MercuryPlayable.DeltaTime;
+            }
+        }
+    }
+    
     public double Speed
     {
         get { return stateManager.controller.GetPlayableSpeed(this); }
@@ -49,20 +93,20 @@ public class AnimationState : IState
         get { return clip.length; }
     }
 
-    private AnimationState(AnimationStateManager stateManager, AnimationClip clip, string name,EnterType enterType)
+    private MercuryState(AnimationStateManager stateManager, AnimationClip clip, string name,EnterType enterType)
     {
         this.stateManager = stateManager;
-        this.Events = new EventManager(Speed>0?1:-1);
+        this.Events = new MercuryEventManager(Speed>0?1:-1);
         this.clip = clip;
         this.name = name;
         this.enterType = enterType;
     }
 
-    public static AnimationState CreateState(AnimationStateManager stateManager, AnimationClip clip, string customName = "",EnterType enterType=EnterType.Regular)
+    public static MercuryState CreateState(AnimationStateManager stateManager, AnimationClip clip, string customName = "",EnterType enterType=EnterType.Regular)
     {
         string name = customName == "" ? clip.name : customName;
         if (stateManager.stateDictionary.IsRegistered(name)) return stateManager.stateDictionary.GetValue(name);
-        AnimationState newState = new AnimationState(stateManager, clip, name,enterType);
+        MercuryState newState = new MercuryState(stateManager, clip, name,enterType);
         stateManager.stateDictionary.Register(newState.name,newState);
         return newState;
     }

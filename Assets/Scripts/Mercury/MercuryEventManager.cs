@@ -21,7 +21,7 @@ class AnimationEvent
         CallBack += callback;
     }
 }
-public class EventManager
+public class MercuryEventManager
 {
     private float endTime;
     private int playDirection;
@@ -41,7 +41,7 @@ public class EventManager
     private int currendIndex;
     private float previousTime;
     private bool isPlayed;
-    public EventManager(int playDirection)
+    public MercuryEventManager(int playDirection)
     {
         this.isPlayed = false;
         this.playDirection = playDirection;

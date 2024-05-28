@@ -12,7 +12,7 @@ public class TestScript : MonoBehaviour
     public AnimationClip walkClip;
     [Range(0f, 1f)]
     public double NormalizedTime;
-    AnimationState state;
+    MercuryState state;
     void Start()
     {
         mercury = GetComponent<MercuryComponent>();

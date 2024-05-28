@@ -7,28 +7,28 @@ using UnityEngine;
 public class MercuryComponent : MonoBehaviour
 {
     [SerializeField, Tooltip("Animator to controll the gameobject")]
-    private Animator _animator;
-    private AnimationStateManager _stateManager;
-    private bool _activated = false;
-    private void Update()
+    private Animator _Animator;
+    private MercuryPlayable _Playable;
+    public Animator GetAnimator()=>_Animator;
+    private void OnEnable()
     {
-        if(_activated)_stateManager.Update();
+        _Animator = GetComponent<Animator>();
+        _Playable = MercuryPlayable.Create();
     }
 
     private void OnDisable()
     {
-        _activated = false;
-        _stateManager.Clear();
+        _Playable.DestroyGraph();
     }
 
-    public AnimationState Play(AnimationClip clip,string customName="",EnterType enterType=EnterType.Regular)
+    public MercuryState Play(AnimationClip clip,string customName="",EnterType enterType=EnterType.Regular)
     {
         if (!_activated)
         {
             _stateManager = AnimationStateManager.Create(_animator, gameObject.name);
             _activated = true;
         }
-        AnimationState state = AnimationState.CreateState(_stateManager, clip, customName,enterType);
+        MercuryState state = MercuryState.CreateState(_stateManager, clip, customName,enterType);
         _stateManager.TransitState(state.name);
         return state;
     }

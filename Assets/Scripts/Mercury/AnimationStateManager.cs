@@ -4,15 +4,15 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-public class AnimationStateManager:StateManagerBase<string,AnimationState>
+public class AnimationStateManager:StateManagerBase<string,MercuryState>
 {
-    public PlayableController controller;
+    public MercuryPlayable controller;
     
     public static AnimationStateManager Create(Animator animator,string graphName)
     {
         AnimationStateManager stateManager = new AnimationStateManager();
-        stateManager.stateDictionary = new MercuryDictionary<string,AnimationState>();
-        stateManager.controller = PlayableController.Create(animator, graphName);
+        stateManager.stateDictionary = new MercuryDictionary<string,MercuryState>();
+        stateManager.controller = MercuryPlayable.Create(animator, graphName);
         return stateManager;
     }
 
@@ -26,7 +26,7 @@ public class AnimationStateManager:StateManagerBase<string,AnimationState>
                 UpdateCurrentState(key);
                 return;
             }
-            AnimationState currentState = (AnimationState)_currentState;
+            MercuryState currentState = (MercuryState)_currentState;
             switch (currentState.enterType)
             {
                 case EnterType.FromStart:
