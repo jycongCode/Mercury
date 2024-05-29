@@ -9,31 +9,24 @@ public class TestScript : MonoBehaviour
     // Start is called before the first frame update
     MercuryComponent mercury;
     public AnimationClip IdleClip;
-    public AnimationClip walkClip;
-    [Range(0f, 1f)]
-    public double NormalizedTime;
-    MercuryState state;
-    void Start()
+    public AnimationClip WalkClip;
+    private void Awake()
     {
         mercury = GetComponent<MercuryComponent>();
-        state = mercury.Play(walkClip);
-        state.Events.AddEvent("Half",0.5f,OnHalfRaised);
-        state.Speed = 1;
     }
-
-    public void OnHalfRaised()
+    void Start()
     {
-        Debug.Log($"OnHalfRaised : time{state.NormalizedTime}");
+        mercury.Play(IdleClip);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.Space))
         {
-            state.NormalizedTime = Random.Range(0f, 1f);
-            Debug.Log(state.NormalizedTime);
+            mercury.Play(WalkClip);
         }
+
     }
     
 }

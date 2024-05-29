@@ -10,6 +10,20 @@ public class MercuryComponent : MonoBehaviour
     private Animator _Animator;
     private MercuryPlayable _Playable;
     public Animator GetAnimator()=>_Animator;
+    private bool _IsPlayed = false;
+    public bool IsPlayed
+    {
+        get => _IsPlayed;
+        set
+        {
+            if(_IsPlayed == false&&value)
+            {
+                _Playable.CreateOutput(_Animator);
+                _Playable.Graph.Play();
+            }
+            _IsPlayed = value;
+        }
+    }
     private void OnEnable()
     {
         _Animator = GetComponent<Animator>();
@@ -21,15 +35,9 @@ public class MercuryComponent : MonoBehaviour
         _Playable.DestroyGraph();
     }
 
-    public MercuryState Play(AnimationClip clip,string customName="",EnterType enterType=EnterType.Regular)
+    public MercuryState Play(AnimationClip clip,float fadeDuration=0.25f,FadeMode mode = FadeMode.FromStart)
     {
-        if (!_activated)
-        {
-            _stateManager = AnimationStateManager.Create(_animator, gameObject.name);
-            _activated = true;
-        }
-        MercuryState state = MercuryState.CreateState(_stateManager, clip, customName,enterType);
-        _stateManager.TransitState(state.name);
-        return state;
+        IsPlayed = true;
+        return _Playable.Play(clip, fadeDuration, mode);
     }
 }

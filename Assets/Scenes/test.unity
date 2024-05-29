@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -35206,7 +35206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IdleClip: {fileID: 7400000, guid: 0fa48e07fc94a4246b4dfa5e4f28ff26, type: 2}
-  walkClip: {fileID: 7400000, guid: f51b126982b87864c9917d3fe266656c, type: 2}
+  WalkClip: {fileID: 7400000, guid: f51b126982b87864c9917d3fe266656c, type: 2}
 --- !u!114 &1384456994356517129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35219,7 +35219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 902c2f537f751b2458f8f1d0d565434a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 1384456994356517130}
+  _Animator: {fileID: 0}
 --- !u!95 &1384456994356517130
 Animator:
   serializedVersion: 5

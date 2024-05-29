@@ -1,6 +1,12 @@
 using UnityEngine.Playables;
 public interface IPlayableWrapper
 {
-    Playable Parent { get; set; }
-    MercuryPlayable Root { get; set; }
+    Playable PlayableHandle { get; set; }
+    IPlayableWrapper Parent { get; set; }
+    float Speed { get;set; }
+    int Index {  get; set; }  
+    bool IsPlaying { get; set; }    
+    MercuryPlayable Root { get; }
+    void RemoveChild(int index);
+    void SetInputWeight(int index,float weight);
 }
