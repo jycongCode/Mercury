@@ -35184,7 +35184,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1378542283090268163}
   - component: {fileID: 1384456994356517130}
-  - component: {fileID: 1384456994356517129}
   - component: {fileID: 1384456994356517128}
   m_Layer: 0
   m_Name: Mon_00
@@ -35207,19 +35206,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IdleClip: {fileID: 7400000, guid: 0fa48e07fc94a4246b4dfa5e4f28ff26, type: 2}
   WalkClip: {fileID: 7400000, guid: f51b126982b87864c9917d3fe266656c, type: 2}
---- !u!114 &1384456994356517129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1384456994356517127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 902c2f537f751b2458f8f1d0d565434a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _Animator: {fileID: 0}
+  Speed: 0
+  Mask: {fileID: 31900000, guid: 132fc3e31c6a1d541a95aace229d77de, type: 2}
 --- !u!95 &1384456994356517130
 Animator:
   serializedVersion: 5

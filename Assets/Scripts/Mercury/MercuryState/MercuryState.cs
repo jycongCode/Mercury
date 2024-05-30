@@ -18,15 +18,10 @@ public class MercuryState : MercuryNode
         get => _Layer;
         set => _Layer = value;
     }
-    public MercuryState(AnimationClip clip,MercuryPlayable root) : base(root)
+    protected MercuryState(MercuryPlayable root) : base(root){}
+    public virtual void Play()
     {
-        _PlayableHandle = AnimationClipPlayable.Create(_Root.Graph, clip);
-    }
-
-    
-    public void Play()
-    {
-        _Weight = 1f;
+        ResetParameter();
         Parent.PlayableHandle.SetInputWeight(Index, 1f);
     }
 }

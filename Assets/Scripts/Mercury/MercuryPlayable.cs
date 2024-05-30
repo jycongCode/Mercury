@@ -73,16 +73,20 @@ public class MercuryPlayable:PlayableBehaviour
     }
 
     #region Play
-    public MercuryState Play(AnimationClip clip, float fadeDuration,FadeMode mode)
-    {
-        return _LayerList.GetLayer(0).Play(clip, fadeDuration, mode);
-    }
+    public MercuryState Play(AnimationClip clip,uint layerIndex, float fadeDuration,FadeMode mode)
+        =>_LayerList.GetLayer(layerIndex).Play(clip, fadeDuration, mode);
+    
+
+    public MercuryState Play(AnimationState state, uint layerIndex, float fadeDuration, FadeMode mode)
+        => _LayerList.GetLayer(state).Play(state, fadeDuration, mode);
     #endregion
     public void DestroyGraph()
     {
         _Graph.Destroy();
     }
 
+    public uint AddLayer(float weight,bool isAdditive,AvatarMask mask)
+        => _LayerList.AddLayer(weight,isAdditive,mask);
 
     //public void AddLayer()
     //{

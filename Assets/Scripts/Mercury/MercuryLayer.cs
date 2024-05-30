@@ -27,10 +27,10 @@ public class MercuryLayer:MercuryNode
         _Ports = new MercuryState[DEFAULT_INPUT_NUM];
     }
 
-    public MercuryState Play(AnimationClip clip,float fadeDuration=0f,FadeMode mode=FadeMode.FromStart)
+    public MercuryState Play(AnimationClip clip,float fadeDuration,FadeMode mode)
         =>Play(new MercuryState(clip,Root),fadeDuration, mode);
 
-    public MercuryState Play(MercuryState state,float fadeDuration=0f,FadeMode mode=FadeMode.FromStart)
+    public MercuryState Play(MercuryState state,float fadeDuration,FadeMode mode)
     {
         if (!_States.Contains(state))
         {
@@ -48,18 +48,18 @@ public class MercuryLayer:MercuryNode
             }
         }
         AddToGraph(port, state);
-
         if (cnt > 0) state.StartFade(fadeDuration, 1f);
         else state.Play();
         return state;
     }
 
-    public override void RemoveChild(int index)
+
+    public override void RemoveFromGraph(int index)
     {
         _PlayableHandle.DisconnectInput(index);
         _Ports[index] = null;
     }
-    public void AddToGraph(int index,MercuryState state)
+    public override void AddToGraph(int index,MercuryState state)
     {
         state.Index = index;
         _Ports[index] = state;

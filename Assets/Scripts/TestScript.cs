@@ -10,23 +10,25 @@ public class TestScript : MonoBehaviour
     MercuryComponent mercury;
     public AnimationClip IdleClip;
     public AnimationClip WalkClip;
+    private MercuryState WalkState;
+    [Range(-1,2)]
+    public float Speed = 1f;
+
+    public AvatarMask Mask;
     private void Awake()
     {
         mercury = GetComponent<MercuryComponent>();
     }
     void Start()
     {
-        mercury.Play(IdleClip);
+        WalkState = mercury.Play(IdleClip);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            mercury.Play(WalkClip);
-        }
-
+        mercury.Play(WalkState);
     }
     
 }

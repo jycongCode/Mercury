@@ -7,6 +7,7 @@ public interface IPlayableWrapper
     int Index {  get; set; }  
     bool IsPlaying { get; set; }    
     MercuryPlayable Root { get; }
-    void RemoveChild(int index);
+    void RemoveFromGraph(int index);
+    void AddToGraph(int index, MercuryState state);
     void SetInputWeight(int index,float weight);
 }
