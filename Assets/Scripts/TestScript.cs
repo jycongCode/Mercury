@@ -21,14 +21,16 @@ public class TestScript : MonoBehaviour
     }
     void Start()
     {
-        WalkState = mercury.Play(IdleClip);
-        
+        WalkState = mercury.Play(WalkClip,0,0.25f,FadeMode.Regular);
     }
 
     // Update is called once per frame
     void Update()
     {
-        mercury.Play(WalkState);
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            mercury.Play(IdleClip);
+        }
     }
     
 }

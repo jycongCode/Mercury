@@ -10,7 +10,7 @@ public enum EnterType
     Regular
 }
 
-public class MercuryState : MercuryNode
+public class MercuryState : MercuryNode,ICopy
 {
     private MercuryLayer _Layer;
     public MercuryLayer Layer
@@ -23,5 +23,10 @@ public class MercuryState : MercuryNode
     {
         ResetParameter();
         Parent.PlayableHandle.SetInputWeight(Index, 1f);
+    }
+
+    public virtual MercuryState CopyFrom()
+    {
+        throw new System.NotImplementedException();
     }
 }

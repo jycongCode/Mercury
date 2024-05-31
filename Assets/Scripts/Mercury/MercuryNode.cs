@@ -12,12 +12,27 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
     protected float _FadeDuration;
     protected float _FadeSpeed;
     protected float _Speed = 1f;
+    protected float _NormalizedTime = 0f;
     protected int _Index;
     protected Playable _PlayableHandle;
     protected IPlayableWrapper _Parent;
     protected MercuryPlayable _Root;
     protected bool _IsPlaying;
-    private bool _IsFirstUpdate = false;
+    
+    protected float effectiveParentSpeed
+    {
+        get
+        {
+            var playable = _Parent;
+            float speed = 1f;
+            while(playable != null&&playable is IPlayableWrapper) 
+            {
+                speed *= playable.Speed;
+                playable = playable.Parent;
+            }
+            return speed;
+        }
+    }
     public bool IsPlaying
     {
         get => _IsPlaying;
@@ -57,8 +72,20 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
         }
         set
         {
-           _Speed = Mathf.Clamp(value, 0f, 1f);
-           PlayableExtensions.SetSpeed(_PlayableHandle, (double)_Speed);
+           _Speed = value;
+           PlayableExtensions.SetSpeed(_PlayableHandle,_Speed);
+        }
+    }
+
+    protected float NormalizedTime
+    {
+        get
+        {
+            return _NormalizedTime;
+        }
+        set
+        {
+            _NormalizedTime = value;
         }
     }
 
@@ -84,6 +111,7 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
         get => _Index;
         set => _Index = value;
     }
+    float IPlayableWrapper.NormalizedTime { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public void ResetParameter()
     {
@@ -93,13 +121,29 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
         _FadeSpeed = float.PositiveInfinity;
     }
 
-    public void StartFade(float fadeDuration,float targetWeight)
+    public virtual void StartFade(float fadeDuration,float targetWeight)
     {
-        _FadeDuration = fadeDuration;
-        _TargetWeight = targetWeight;
-        _FadeSpeed = (_TargetWeight - _Weight) / _FadeDuration;
+        if(fadeDuration <= 0)
+        {
+            Play(targetWeight);
+        }
+        else
+        {
+            _FadeDuration = fadeDuration;
+            _TargetWeight = targetWeight;
+            _FadeSpeed = (_TargetWeight - _Weight) / _FadeDuration;
+        }
         IsPlaying = true;
         Root?.RequirePreUpdate(this);
+    }
+
+    public virtual void Play(float targetWeight)
+    {
+        _TargetWeight = targetWeight;
+        _FadeDuration = 0f;
+        _Weight = targetWeight;
+        IsPlaying = true;
+        _Root?.RequirePreUpdate(this);
     }
     public void Update()
     {
@@ -109,7 +153,7 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
 
     public void UpdateWeight()
     {
-        if (_FadeSpeed * (_TargetWeight - _Weight) < 0)
+        if (_FadeSpeed * (_TargetWeight - _Weight) <= 0)
         {
             _Weight = _TargetWeight;
             _FadeSpeed = 0f;
@@ -118,24 +162,29 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
         }
         else
         {
-            _Weight += _FadeSpeed * MercuryPlayable.DeltaTime;
-            if (MercuryPlayable.DeltaTime > 0 && _Weight <= 0)
-            {
-                _Parent.RemoveFromGraph(_Index);
-                IsPlaying = false;
-            }
+            Debug.Log(effectiveParentSpeed);
+            _Weight += _FadeSpeed * MercuryPlayable.DeltaTime * effectiveParentSpeed *Speed;
         }
     }
 
     public void SetGraphWeight()
     {
-        SetInputWeight(_Index, _Weight);
+        if(MercuryPlayable.DeltaTime > 0 && _Weight <= 0)
+        {
+            _Parent.RemoveFromGraph(_Index);
+            IsPlaying = false;
+        }
+        else
+        {
+            SetInputWeight(_Index, _Weight);
+        }
     }
 
     public virtual void Stop()
     {
         Debug.Log("Stop");
     }
+
     public virtual void RemoveFromGraph(int index)
     {
         throw new System.NotImplementedException();

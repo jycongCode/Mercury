@@ -7,7 +7,8 @@ using UnityEngine.Playables;
 
 public enum FadeMode
 {
-    FromStart
+    FromStart,
+    Regular
 }
 
 public enum PlayMessage
@@ -28,32 +29,75 @@ public class MercuryLayer:MercuryNode
     }
 
     public MercuryState Play(AnimationClip clip,float fadeDuration,FadeMode mode)
-        =>Play(new MercuryState(clip,Root),fadeDuration, mode);
+        =>Play(new MercuryClipState(clip,Root),fadeDuration, mode);
 
     public MercuryState Play(MercuryState state,float fadeDuration,FadeMode mode)
     {
-        if (!_States.Contains(state))
+        switch (mode)
         {
-            AddState(state);
+            case FadeMode.FromStart:
+                if (_States.Contains(state))
+                {
+                    state = state.CopyFrom();
+                }
+                AddState(state);
+                return PlayNewState(state, fadeDuration);
+            case FadeMode.Regular:
+                if (!_States.Contains(state))
+                {
+                    AddState(state);
+                }
+                return PlayExistState(state,fadeDuration);
+            default:
+                return null;
         }
-        var port = FindAvailablePort();
-        if (port == -1) return null;
-        int cnt = 0;
-        for(int i = 0;i<DEFAULT_INPUT_NUM;++i)
-        {
-            if (_Ports[i] is MercuryState pState)
-            {
-                ++cnt;
-                pState.StartFade(fadeDuration, 0f);
-            }
-        }
-        AddToGraph(port, state);
-        if (cnt > 0) state.StartFade(fadeDuration, 1f);
-        else state.Play();
-        return state;
     }
 
-
+    public MercuryState PlayNewState(MercuryState state,float fadeDuration)
+    {
+        var port = FindAvailablePort();
+        Debug.Log(port);
+        if (port == -1) return null;
+        if (fadeDuration <= 0)
+        {
+            for (int i = 0; i < DEFAULT_INPUT_NUM; ++i)
+            {
+                if (_Ports[i] is MercuryState pState)
+                {
+                    Root?.CancelPreUpdate(pState);
+                    pState.Play(0f);
+                }
+            }
+            state.Play(1f);
+        }
+        else
+        {
+            int cnt = 0;
+            for (int i = 0; i < DEFAULT_INPUT_NUM; ++i)
+            {
+                if (_Ports[i] is MercuryState pState)
+                {
+                    ++cnt;
+                    pState.StartFade(fadeDuration, 0f);
+                }
+            }
+            AddToGraph(port, state);
+            if (cnt > 0) state.StartFade(fadeDuration, 1f);
+            else state.Play(1f);
+        }
+        return state;
+    }
+    public MercuryState PlayExistState(MercuryState state,float fadeDuration)
+    {
+        if (state.IsPlaying)
+        {
+            return state;
+        }
+        else
+        {
+            return PlayNewState(state, fadeDuration);
+        }
+    }
     public override void RemoveFromGraph(int index)
     {
         _PlayableHandle.DisconnectInput(index);
@@ -65,7 +109,6 @@ public class MercuryLayer:MercuryNode
         _Ports[index] = state;
         _PlayableHandle.ConnectInput(index, state.PlayableHandle, 0);
     }
-
     public int FindAvailablePort()
     {
         for(int i = 0;i< _Ports.Length; i++)
@@ -74,7 +117,6 @@ public class MercuryLayer:MercuryNode
         }
         return -1;
     }
-
     public void AddState(MercuryState state)
     {
         state.Parent = this;

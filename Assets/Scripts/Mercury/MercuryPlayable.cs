@@ -76,9 +76,8 @@ public class MercuryPlayable:PlayableBehaviour
     public MercuryState Play(AnimationClip clip,uint layerIndex, float fadeDuration,FadeMode mode)
         =>_LayerList.GetLayer(layerIndex).Play(clip, fadeDuration, mode);
     
-
-    public MercuryState Play(AnimationState state, uint layerIndex, float fadeDuration, FadeMode mode)
-        => _LayerList.GetLayer(state).Play(state, fadeDuration, mode);
+    public MercuryState Play(MercuryState state, uint layerIndex, float fadeDuration, FadeMode mode)
+        =>_LayerList.GetLayer(layerIndex).Play(state, fadeDuration, mode);
     #endregion
     public void DestroyGraph()
     {
@@ -87,88 +86,4 @@ public class MercuryPlayable:PlayableBehaviour
 
     public uint AddLayer(float weight,bool isAdditive,AvatarMask mask)
         => _LayerList.AddLayer(weight,isAdditive,mask);
-
-    //public void AddLayer()
-    //{
-    //    if (_usedPortNum < DEFAULT_LAYER_NUM)
-    //    {
-    //        var port = _usedPortNum;
-    //        _usedPortNum++;
-    //        var layer = MercuryLayer.Create(this);
-    //        layer.ConnectGraph(port);
-    //    }
-    //}
-
-
-    //public double GetPlayableSpeed(MercuryState state)
-    //{
-    //    if (!playableDictionary.IsRegistered(state)) return 0d;
-    //    Playable source = playableDictionary.GetValue(state).source;
-    //    return PlayableExtensions.GetSpeed(source);
-    //}
-
-    //public void SetPlayableSpeed(MercuryState state,double speed)
-    //{
-    //    if (!playableDictionary.IsRegistered(state)) return;
-    //    Playable source = playableDictionary.GetValue(state).source;
-    //    source.SetSpeed(speed);
-    //}
-
-    //public double GetPlayableNormalizedTime(MercuryState state)
-    //{
-    //    if (!playableDictionary.IsRegistered(state)) return 0d;
-    //    Playable source = playableDictionary.GetValue(state).source;
-    //    return source.GetTime() / state.Duration;
-    //}
-
-    //public void SetPlayableNormalizedTime(MercuryState state,double normalizedTime)
-    //{
-    //    if (!playableDictionary.IsRegistered(state) || normalizedTime < 0) return;
-    //    Playable source = playableDictionary.GetValue(state).source;
-    //    source.SetTime(normalizedTime * state.Duration);
-    //}
-
-    //public void UpdateWeight(MercuryState state,float targetWeight)
-    //{
-    //    if (!playableDictionary.IsRegistered(state)) return;
-    //    PlayableInput playableInput = playableDictionary.GetValue(state);
-    //    if (_usedPortNum <= 1)
-    //    {
-    //        _Mixer.SetInputWeight(playableInput.port, 1f);
-    //    }
-    //    else
-    //    { 
-    //        float restSumWeight = 1f - targetWeight;
-    //        _Mixer.SetInputWeight(playableInput.port, targetWeight);
-    //        List<MercuryState> garbageBag = new List<MercuryState>();
-    //        for(int port = 0;port<MaxMixerInput;++port)
-    //        {
-    //            if (port != playableInput.port&&!_Mixer.GetInput(port).IsNull())
-    //            {
-
-    //                float weight = _Mixer.GetInputWeight(port) * restSumWeight;
-    //                if (Mathf.Abs(weight)<WEIGHT_THRESHOLD)
-    //                {
-    //                    MercuryState tmp = portHash[port];
-    //                    if(tmp != null)
-    //                    { 
-    //                        _Graph.DestroyPlayable(playableDictionary.GetValue(tmp).source);
-    //                        playableDictionary.UnRegister(tmp);
-    //                        portHash[port] = null;
-    //                    }
-    //                    else
-    //                    {
-    //                        _Graph.DestroyPlayable(_Mixer.GetInput(port));
-    //                    }
-    //                    --_usedPortNum;
-
-    //                }
-    //                else
-    //                {
-    //                    _Mixer.SetInputWeight(port, weight);
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
 }

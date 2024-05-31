@@ -16,7 +16,6 @@ public class MercuryLayerList : MercuryNode
         AddLayer(1f,false,null);
 
     }
-
     public uint AddLayer(float weight,bool isAdditive, AvatarMask mask)
         => AddLayer(new MercuryLayer(Root),weight,isAdditive,mask);
     public uint AddLayer(MercuryLayer layer,float weight,bool isAdditive, AvatarMask mask)

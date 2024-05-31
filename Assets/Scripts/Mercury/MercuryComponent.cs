@@ -16,6 +16,7 @@ public class MercuryComponent : MonoBehaviour
     {
         _Animator = GetComponent<Animator>();
         _Playable = MercuryPlayable.Create();
+        _Playable.CreateOutput(_Animator);
         _Playable.Graph.Play();
     }
 
@@ -24,12 +25,13 @@ public class MercuryComponent : MonoBehaviour
         _Playable.DestroyGraph();
     }
 
-    public MercuryState Play(AnimationClip clip,uint layerIndex=0,float fadeDuration=0.25f,FadeMode mode = FadeMode.FromStart)
+    #region Play
+    public MercuryState Play(AnimationClip clip,uint layerIndex = 0,float fadeDuration=0.25f,FadeMode mode = FadeMode.FromStart)
         => _Playable.Play(clip ,layerIndex, fadeDuration, mode);
 
-
-    public MercuryState Play(AnimationState state, uint layerIndex = 0, float fadeDuration = 0.25f, FadeMode mode = FadeMode.FromStart)
+    public MercuryState Play(MercuryState state, uint layerIndex = 0, float fadeDuration = 0.25f, FadeMode mode = FadeMode.FromStart)
         => _Playable.Play(state, layerIndex, fadeDuration, mode);
+    #endregion
 
     public uint AddLayer(float weight, bool isAdditive=false, AvatarMask mask=null)
         =>_Playable.AddLayer(weight, isAdditive, mask);

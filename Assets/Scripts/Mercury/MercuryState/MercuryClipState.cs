@@ -5,9 +5,16 @@ using UnityEngine.Animations;
 
 public class MercuryClipState : MercuryState
 {
-    public MercuryClipState(AnimationClip clip, MercuryPlayable root) : base(clip, root)
+    private AnimationClip _Clip;
+    public MercuryClipState(AnimationClip clip, MercuryPlayable root) : base(root)
     {
+        _Clip = clip;
         _PlayableHandle = AnimationClipPlayable.Create(_Root.Graph, clip);
+    }
+
+    public override MercuryState CopyFrom()
+    {
+        return new MercuryClipState(_Clip, _Root);
     }
 
 }
