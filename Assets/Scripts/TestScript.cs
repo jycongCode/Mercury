@@ -11,6 +11,7 @@ public class TestScript : MonoBehaviour
     public AnimationClip IdleClip;
     public AnimationClip WalkClip;
     private MercuryState WalkState;
+    private MercuryState IdleState;
     [Range(-1,2)]
     public float Speed = 1f;
 
@@ -22,15 +23,13 @@ public class TestScript : MonoBehaviour
     void Start()
     {
         WalkState = mercury.Play(WalkClip,0,0.25f,FadeMode.Regular);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyUp(KeyCode.Space))
-        {
-            mercury.Play(IdleClip);
-        }
+        
     }
     
 }

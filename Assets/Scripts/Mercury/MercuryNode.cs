@@ -18,7 +18,16 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
     protected IPlayableWrapper _Parent;
     protected MercuryPlayable _Root;
     protected bool _IsPlaying;
-    
+    protected ulong _frameID;
+    public MercuryNode(MercuryPlayable root)
+    {
+        _Root = root;
+        _Weight = 0f;
+        _TargetWeight = 1f;
+        _FadeDuration = 0f;
+        _Index = -1;
+        _Speed = 1f;
+    }
     protected float effectiveParentSpeed
     {
         get
@@ -42,15 +51,7 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
             if (!_IsPlaying) Stop();
         }
     }
-    public MercuryNode(MercuryPlayable root)
-    {
-        _Root = root;
-        _Weight = 0f;
-        _TargetWeight = 1f;
-        _FadeDuration = 0f;
-        _Index = -1;
-        _Speed = 1f;
-    }
+    
     protected float effectiveSpeed
     {
         get
@@ -64,6 +65,7 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
             return speed;
         }
     }
+
     public float Speed
     {
         get
@@ -77,7 +79,7 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
         }
     }
 
-    protected float NormalizedTime
+    public virtual float NormalizedTime
     {
         get
         {
@@ -111,8 +113,7 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
         get => _Index;
         set => _Index = value;
     }
-    float IPlayableWrapper.NormalizedTime { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-
+    
     public void ResetParameter()
     {
         _Weight = 1f;
@@ -123,6 +124,7 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
 
     public virtual void StartFade(float fadeDuration,float targetWeight)
     {
+        _frameID = MercuryPlayable.FrameID;
         if(fadeDuration <= 0)
         {
             Play(targetWeight);
@@ -145,12 +147,14 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
         IsPlaying = true;
         _Root?.RequirePreUpdate(this);
     }
-    public void Update()
+    void IUpdate.Update()
     {
-          UpdateWeight();
-          SetGraphWeight();
+        UpdateWeight();
+        SetGraphWeight(); 
+        OnStop();
     }
 
+    public virtual void OnStop(){}
     public void UpdateWeight()
     {
         if (_FadeSpeed * (_TargetWeight - _Weight) <= 0)
@@ -158,11 +162,10 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
             _Weight = _TargetWeight;
             _FadeSpeed = 0f;
             _FadeDuration = float.PositiveInfinity;
-            Root?.CancelPreUpdate(this);
         }
         else
         {
-            Debug.Log(effectiveParentSpeed);
+            //Debug.Log(effectiveParentSpeed);
             _Weight += _FadeSpeed * MercuryPlayable.DeltaTime * effectiveParentSpeed *Speed;
         }
     }
@@ -171,6 +174,7 @@ public abstract class MercuryNode : IPlayableWrapper, IUpdate
     {
         if(MercuryPlayable.DeltaTime > 0 && _Weight <= 0)
         {
+            Root?.CancelPreUpdate(this);
             _Parent.RemoveFromGraph(_Index);
             IsPlaying = false;
         }

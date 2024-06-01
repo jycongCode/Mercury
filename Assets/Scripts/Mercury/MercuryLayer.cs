@@ -56,7 +56,7 @@ public class MercuryLayer:MercuryNode
     public MercuryState PlayNewState(MercuryState state,float fadeDuration)
     {
         var port = FindAvailablePort();
-        Debug.Log(port);
+        //Debug.Log(port);
         if (port == -1) return null;
         if (fadeDuration <= 0)
         {

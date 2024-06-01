@@ -7,7 +7,6 @@ using System.Reflection;
 
 public class MercuryPlayable:PlayableBehaviour
 {
-   
     private PlayableGraph _Graph;
     public PlayableGraph Graph { get => _Graph; }
     private AnimationPlayableOutput _Output;
@@ -17,7 +16,10 @@ public class MercuryPlayable:PlayableBehaviour
     private MercuryLayerList _LayerList;
     private HashSet<IUpdate> _PreFrameUpdate;
     private HashSet<IUpdate> _PreUpdateToDelete;
+    private HashSet<IUpdate> _PostFrameUpdate;
+    private HashSet<IUpdate> _PostUpdateToDelete;
     private static readonly MercuryPlayable Template = new MercuryPlayable();
+    public static ulong FrameID {  get; set; }
     public static MercuryPlayable Create()
     {
         var graph = PlayableGraph.Create();
@@ -63,8 +65,16 @@ public class MercuryPlayable:PlayableBehaviour
             node.Update();
         }
         DeltaTime = info.deltaTime * info.effectiveParentSpeed;
+        FrameID = info.frameId;
         ClearPreUpdate();
     }
+
+    public override void ProcessFrame(Playable playable, FrameData info, object playerData)
+    {
+        base.ProcessFrame(playable, info, playerData);
+        Debug.Log("Hello");
+    }
+
     #endregion
     public void CreateOutput(Animator animator)
     {

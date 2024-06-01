@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ public enum EnterType
     Regular
 }
 
-public class MercuryState : MercuryNode,ICopy
+public class MercuryState : MercuryNode, ICopy
 {
     private MercuryLayer _Layer;
     public MercuryLayer Layer
@@ -18,6 +19,8 @@ public class MercuryState : MercuryNode,ICopy
         get => _Layer;
         set => _Layer = value;
     }
+    public virtual bool IsLoop{get;set;}
+    public Action OnEnd;
     protected MercuryState(MercuryPlayable root) : base(root){}
     public virtual void Play()
     {

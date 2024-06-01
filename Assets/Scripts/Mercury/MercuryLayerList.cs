@@ -14,7 +14,6 @@ public class MercuryLayerList : MercuryNode
         _PlayableHandle = AnimationLayerMixerPlayable.Create(_Root.Graph, DEFAULT_LAYER_NUM);
         _Layers = new List<MercuryLayer>();
         AddLayer(1f,false,null);
-
     }
     public uint AddLayer(float weight,bool isAdditive, AvatarMask mask)
         => AddLayer(new MercuryLayer(Root),weight,isAdditive,mask);
