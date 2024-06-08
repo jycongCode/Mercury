@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
 using System.Reflection;
+using Unity.VisualScripting;
 
 public class MercuryPlayable:PlayableBehaviour
 {
@@ -14,10 +15,8 @@ public class MercuryPlayable:PlayableBehaviour
     private Playable _Playable;
     public static float DeltaTime { get; set; }
     private MercuryLayerList _LayerList;
+    private HashSet<IUpdate> _PreCacheList;
     private HashSet<IUpdate> _PreFrameUpdate;
-    private HashSet<IUpdate> _PreUpdateToDelete;
-    private HashSet<IUpdate> _PostFrameUpdate;
-    private HashSet<IUpdate> _PostUpdateToDelete;
     private static readonly MercuryPlayable Template = new MercuryPlayable();
     public static ulong FrameID {  get; set; }
     public static MercuryPlayable Create()
@@ -29,22 +28,14 @@ public class MercuryPlayable:PlayableBehaviour
     #region Update
     public void RequirePreUpdate(IUpdate update)
     {
-        _PreFrameUpdate.Add(update); 
+        _PreCacheList.Add(update); 
     }
 
     public void CancelPreUpdate(IUpdate update)
     {
-        _PreUpdateToDelete.Add(update);
+        _PreCacheList.Remove(update);
     }
 
-    public void ClearPreUpdate()
-    {
-        foreach(var update in _PreUpdateToDelete)
-        {
-            _PreFrameUpdate.Remove(update);
-        }
-        _PreUpdateToDelete.Clear();
-    }
     #endregion
 
     #region PlayableBehaviour
@@ -54,19 +45,21 @@ public class MercuryPlayable:PlayableBehaviour
         _Graph = playable.GetGraph();
         _LayerList = new MercuryLayerList(this);
         _PreFrameUpdate = new HashSet<IUpdate>();
-        _PreUpdateToDelete = new HashSet<IUpdate>();
+        _PreCacheList = new HashSet<IUpdate>();
         _Graph.Connect(_LayerList.PlayableHandle, 0, _Playable, 0);
     }
 
     public override void PrepareFrame(Playable playable, FrameData info)
     {
+        _PreFrameUpdate.Clear();
+        foreach(var update in _PreCacheList) _PreFrameUpdate.Add(update);
         foreach(var node in _PreFrameUpdate)
         {
             node.Update();
         }
+       
         DeltaTime = info.deltaTime * info.effectiveParentSpeed;
         FrameID = info.frameId;
-        ClearPreUpdate();
     }
 
     public override void ProcessFrame(Playable playable, FrameData info, object playerData)

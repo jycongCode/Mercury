@@ -23,13 +23,22 @@ public class TestScript : MonoBehaviour
     void Start()
     {
         WalkState = mercury.Play(WalkClip,0,0.25f,FadeMode.Regular);
-        
+        WalkState.OnEnd += PlayIdle;
+    }
+
+    void PlayIdle()
+    {
+        Debug.Log("here");
+        IdleState = mercury.Play(IdleClip);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            mercury.Play(IdleClip, 0, 0.25f, FadeMode.FromStart);
+        }
     }
     
 }

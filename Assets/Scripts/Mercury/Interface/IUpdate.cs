@@ -1,4 +1,4 @@
 public interface IUpdate
 {
-    void Update();
+    bool Update();
 }

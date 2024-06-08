@@ -8,27 +8,28 @@ public class MercuryClipState : MercuryState
 {
     private AnimationClip _Clip;
     public float Length { get => _Clip.length; }
-    public override bool IsLoop { get => _Clip.isLooping;}
-    public MercuryClipState(AnimationClip clip, MercuryPlayable root) : base(root)
+    public bool IsLoop { get => _Clip.isLooping;}
+    public MercuryClipState(AnimationClip clip,string name,int portNum,MercuryPlayable root) : base(root,name,portNum)
     {
         _Clip = clip;
-        _PlayableHandle = AnimationClipPlayable.Create(_Root.Graph, clip);
+        PlayableHandle = AnimationClipPlayable.Create(Root.Graph, _Clip);
     }
+    private bool isStop = false;
     public override void OnStop()
     {
-        if (!IsLoop)
+        if (!IsLoop&&!isStop)
         {
             float time = (float)PlayableExtensions.GetTime(_PlayableHandle);
             if(time>=Length)
             {
-                Root?.CancelPreUpdate(this);
+                isStop = true;
                 OnEnd?.Invoke();
             }
         }
     }
-    public override MercuryState CopyFrom()
+    public override MercuryState Clone()
     {
-        return new MercuryClipState(_Clip, _Root);
+        return new MercuryClipState(_Clip, Name, _InputPortNum, Root);
     }
 
 }

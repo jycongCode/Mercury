@@ -1,206 +1,73 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-public abstract class MercuryNode : IPlayableWrapper, IUpdate
+public abstract class MercuryNode
 {
-    protected float _Weight;
-    protected float _TargetWeight;
-    protected float _FadeDuration;
-    protected float _FadeSpeed;
-    protected float _Speed = 1f;
-    protected float _NormalizedTime = 0f;
-    protected int _Index;
-    protected Playable _PlayableHandle;
-    protected IPlayableWrapper _Parent;
-    protected MercuryPlayable _Root;
-    protected bool _IsPlaying;
-    protected ulong _frameID;
-    public MercuryNode(MercuryPlayable root)
+    public string Name;
+    public Playable PlayableHandle;
+    protected MercuryNode _Parent;
+    public MercuryPlayable Root;
+    protected List<MercuryNode> _Children;
+
+    protected readonly int _InputPortNum;
+    public int Port = -1;
+    public bool IsValid { get => PlayableHandle.IsValid(); }
+    public MercuryNode(MercuryPlayable root,string name,int portNum)
     {
-        _Root = root;
-        _Weight = 0f;
-        _TargetWeight = 1f;
-        _FadeDuration = 0f;
-        _Index = -1;
-        _Speed = 1f;
+        Root = root;
+        Name = name;
+        _InputPortNum = portNum;
+        _Children = new List<MercuryNode>();
     }
-    protected float effectiveParentSpeed
+
+    public int FindAvailablePort()
     {
-        get
+        int port = -1;
+        int lenth = _Children.Count;
+        for(int i = 0;i<lenth; i++)
         {
-            var playable = _Parent;
-            float speed = 1f;
-            while(playable != null&&playable is IPlayableWrapper) 
+            if (!_Children[i].IsValid)
             {
-                speed *= playable.Speed;
-                playable = playable.Parent;
+                port = i;
+                break;
             }
-            return speed;
         }
-    }
-    public bool IsPlaying
-    {
-        get => _IsPlaying;
-        set
-        {
-            _IsPlaying = value;
-            if (!_IsPlaying) Stop();
-        }
-    }
-    
-    protected float effectiveSpeed
-    {
-        get
-        {
-            var speed = Speed;
-            var parentPlayable = Parent;
-            while(parentPlayable is MercuryNode)
-            {
-                speed *= parentPlayable.Speed;
-            }
-            return speed;
-        }
+        Debug.LogWarning($"No available port in {Name}");
+        return port;
     }
 
-    public float Speed
+    public void AddChildren(int port,MercuryNode node)
     {
-        get
-        {
-            return _Speed;
-        }
-        set
-        {
-           _Speed = value;
-           PlayableExtensions.SetSpeed(_PlayableHandle,_Speed);
-        }
+        Root.Graph.Connect(node.PlayableHandle,0,PlayableHandle,port);
+        node.Port = port;
+        _Children.Add(node);
     }
 
-    public virtual float NormalizedTime
+    public void RemoveChildren(MercuryNode node)
     {
-        get
-        {
-            return _NormalizedTime;
-        }
-        set
-        {
-            _NormalizedTime = value;
-        }
+        Root.Graph.Disconnect(PlayableHandle, node.Port);
+        node.Port = -1;
+        _Children.Remove(node);
     }
 
-    public Playable PlayableHandle { 
-        get => _PlayableHandle; 
-        set => _PlayableHandle = value;
-    }
-
-    public IPlayableWrapper Parent { 
-        get => _Parent; 
-        set => _Parent = value; 
-    }
-
-    public MercuryPlayable Root { 
-        get => _Root; 
-    }
-
-    public virtual void SetInputWeight(int index,float weight)
+    public void SetChildWeight(int port,float weight)
     {
-        Parent.PlayableHandle.SetInputWeight(index,weight);
-    }
-    public int Index { 
-        get => _Index;
-        set => _Index = value;
-    }
-    
-    public void ResetParameter()
-    {
-        _Weight = 1f;
-        _TargetWeight = 1f;
-        _FadeDuration = 0f;
-        _FadeSpeed = float.PositiveInfinity;
-    }
-
-    public virtual void StartFade(float fadeDuration,float targetWeight)
-    {
-        _frameID = MercuryPlayable.FrameID;
-        if(fadeDuration <= 0)
+        if (_Children[port].IsValid)
         {
-            Play(targetWeight);
+            PlayableHandle.SetInputWeight(port, weight);
         }
         else
         {
-            _FadeDuration = fadeDuration;
-            _TargetWeight = targetWeight;
-            _FadeSpeed = (_TargetWeight - _Weight) / _FadeDuration;
-        }
-        IsPlaying = true;
-        Root?.RequirePreUpdate(this);
-    }
-
-    public virtual void Play(float targetWeight)
-    {
-        _TargetWeight = targetWeight;
-        _FadeDuration = 0f;
-        _Weight = targetWeight;
-        IsPlaying = true;
-        _Root?.RequirePreUpdate(this);
-    }
-    void IUpdate.Update()
-    {
-        UpdateWeight();
-        SetGraphWeight(); 
-        OnStop();
-    }
-
-    public virtual void OnStop(){}
-    public void UpdateWeight()
-    {
-        if (_FadeSpeed * (_TargetWeight - _Weight) <= 0)
-        {
-            _Weight = _TargetWeight;
-            _FadeSpeed = 0f;
-            _FadeDuration = float.PositiveInfinity;
-        }
-        else
-        {
-            //Debug.Log(effectiveParentSpeed);
-            _Weight += _FadeSpeed * MercuryPlayable.DeltaTime * effectiveParentSpeed *Speed;
+            Debug.LogWarning($"Port not found for MercuryNode {Name}");
         }
     }
 
-    public void SetGraphWeight()
-    {
-        if(MercuryPlayable.DeltaTime > 0 && _Weight <= 0)
-        {
-            Root?.CancelPreUpdate(this);
-            _Parent.RemoveFromGraph(_Index);
-            IsPlaying = false;
-        }
-        else
-        {
-            SetInputWeight(_Index, _Weight);
-        }
-    }
+    public MercuryNode GetParent() => _Parent;
+    public void SetParent(MercuryNode parent)=>_Parent = parent;
 
-    public virtual void Stop()
-    {
-        Debug.Log("Stop");
-    }
-
-    public virtual void RemoveFromGraph(int index)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public virtual void AddToGraph(int index, MercuryState state) 
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void SetPlayable()
-    {
-        throw new System.NotImplementedException();
-    }
 }
