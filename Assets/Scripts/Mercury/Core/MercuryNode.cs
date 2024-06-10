@@ -13,51 +13,64 @@ public abstract class MercuryNode
     protected MercuryNode _Parent;
     public MercuryPlayable Root;
     protected List<MercuryNode> _Children;
-
+    protected Dictionary<int,MercuryNode> _Nodes;
     protected readonly int _InputPortNum;
     public int Port = -1;
     public bool IsValid { get => PlayableHandle.IsValid(); }
+    public bool IsEmpty { get => _Children.Count == 0; }
     public MercuryNode(MercuryPlayable root,string name,int portNum)
     {
         Root = root;
         Name = name;
         _InputPortNum = portNum;
         _Children = new List<MercuryNode>();
+        _Nodes = new Dictionary<int, MercuryNode>();
     }
 
     public int FindAvailablePort()
     {
-        int port = -1;
-        int lenth = _Children.Count;
-        for(int i = 0;i<lenth; i++)
+        //Debug.Log(_InputPortNum);
+        for(int p = 0;p< _InputPortNum; ++p)
         {
-            if (!_Children[i].IsValid)
+            if (PlayableHandle.GetInput(p).IsNull())
             {
-                port = i;
-                break;
+                return p;
             }
         }
-        Debug.LogWarning($"No available port in {Name}");
-        return port;
+        return -1;
     }
 
     public void AddChildren(int port,MercuryNode node)
     {
+        if (PlayableHandle.GetInput(port).IsValid())
+        {
+            Debug.LogWarning($"The port of {Name} is already taken");
+            return;
+        }
         Root.Graph.Connect(node.PlayableHandle,0,PlayableHandle,port);
         node.Port = port;
         _Children.Add(node);
+        _Nodes.Add(port, node);
     }
 
     public void RemoveChildren(MercuryNode node)
     {
         Root.Graph.Disconnect(PlayableHandle, node.Port);
-        node.Port = -1;
         _Children.Remove(node);
+        _Nodes.Remove(node.Port);
+    }
+
+    public void RemoveChildren(int port)
+    {
+        if (_Nodes.ContainsKey(port))
+        {
+            RemoveChildren(_Nodes[port]);
+        }
     }
 
     public void SetChildWeight(int port,float weight)
     {
-        if (_Children[port].IsValid)
+        if (_Nodes.ContainsKey(port))
         {
             PlayableHandle.SetInputWeight(port, weight);
         }

@@ -8,16 +8,22 @@ using UnityEngine.Playables;
 
 public class MercuryLayer:MercuryNode,IUpdate
 {
-    public MercuryLayer(MercuryPlayable root,string name,int portNum) : base(root,name,portNum)
+    public AvatarMask Mask;
+    public bool IsAdditive;
+    private float _Weight;
+    public float Weight { get => _Weight; }
+    public MercuryLayer(MercuryPlayable root,string name,int portNum,AvatarMask mask=null,bool isAdditive=false) : base(root,name,portNum)
     {
         PlayableHandle = AnimationMixerPlayable.Create(root.Graph,portNum);
+        Mask = mask;
+        IsAdditive = isAdditive;
+        _Weight = 1f;
     }
 
     #region State Management
     public MercuryClipState CreateState(AnimationClip clip, string name) 
     {
         var state = new MercuryClipState(clip, name,1,Root);
-        AddState(state);
         return state;
     }
 
@@ -29,6 +35,14 @@ public class MercuryLayer:MercuryNode,IUpdate
     }
 
     public bool ContainsState(MercuryState state)=>_Children.Contains(state);
+    public MercuryState GetState(int port)
+    {
+        if (_Nodes.ContainsKey(port))
+        {
+            return _Nodes[port] as MercuryState;
+        }
+        else return null;
+    }
     #endregion
 
     #region Play
@@ -44,9 +58,16 @@ public class MercuryLayer:MercuryNode,IUpdate
         switch (mode)
         {
             case FadeMode.FromStart:
-                var newState = state.Clone();
-                AddState(newState);
-                FadeState(newState,fadeDuration);
+                if (ContainsState(state))
+                {
+                    var newState = state.Clone();
+                    if(AddState(newState)==-1)break;
+                    FadeState(newState, fadeDuration);
+                }else
+                {
+                    if (AddState(state) == -1) break;
+                    FadeState(state, fadeDuration);
+                }
                 break;
             case FadeMode.Regular:
                 if (!ContainsState(state))
@@ -67,10 +88,12 @@ public class MercuryLayer:MercuryNode,IUpdate
                 (child as MercuryState).StartFade(fadeDuration, 0f);
             }
         }
-        if(_Children.Count<=0)
+        if(_Children.Count>1)
             state.StartFade(fadeDuration, 1f);
         else
-            state.StartFade(0f,1f);
+        {
+            state.StartFade(0f, 1f);
+        }
     }
     #endregion
     public bool Update()
@@ -79,8 +102,13 @@ public class MercuryLayer:MercuryNode,IUpdate
         for(int i = length - 1; i >= 0; i--)
         {
             var child = _Children[i];
+            
             var isContinue = (child as IUpdate).Update();
-            if(!isContinue)_Children.RemoveAt(i);
+            //Debug.Log((child as MercuryState).Weight);
+            if (!isContinue)
+            {
+                RemoveChildren(child);
+            }
             else SetChildWeight(child.Port,(child as MercuryState).Weight);
         }
         return true;

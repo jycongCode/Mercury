@@ -19,7 +19,7 @@ public class MercuryClipState : MercuryState
     {
         if (!IsLoop&&!isStop)
         {
-            float time = (float)PlayableExtensions.GetTime(_PlayableHandle);
+            float time = (float)PlayableExtensions.GetTime(PlayableHandle);
             if(time>=Length)
             {
                 isStop = true;
