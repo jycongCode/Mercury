@@ -21,11 +21,20 @@ public class MercuryLayer:MercuryNode,IUpdate
     }
 
     #region State Management
-    public MercuryClipState CreateState(AnimationClip clip, string name) 
+    public MercuryState CreateState(IParam parameter, string name) 
     {
-        var state = new MercuryClipState(clip, name,1,Root);
-        return state;
+        switch(parameter.Type)
+        {
+            case StateType.ClipState:
+                return new MercuryClipState(parameter, Root);
+            case StateType.BlendState:
+                return new MercuryBlendState(parameter, Root);
+            default:
+                return null;
+        }
     }
+
+
 
     public int AddState(MercuryState state)
     {
@@ -46,9 +55,9 @@ public class MercuryLayer:MercuryNode,IUpdate
     #endregion
 
     #region Play
-    public MercuryState Play(AnimationClip clip,float fadeDuration,FadeMode mode)
+    public MercuryState Play(IParam parameter,float fadeDuration,FadeMode mode)
     {
-        var state = CreateState(clip, clip.name);
+        var state = CreateState(parameter,parameter.Name);
         Play(state, fadeDuration, mode);
         return state;
     }

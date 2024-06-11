@@ -23,8 +23,8 @@ public class MercuryComponent : MonoBehaviour
     }
 
     #region Play
-    public MercuryState Play(AnimationClip clip,float fadeDuration=0.25f,FadeMode mode = FadeMode.FromStart)
-        => _Playable.Play(clip ,fadeDuration, mode);
+    public MercuryState Play(IParam parameter,float fadeDuration=0.25f,FadeMode mode = FadeMode.FromStart)
+        => _Playable.Play(parameter,fadeDuration, mode);
 
     public void Play(MercuryState state)
         => _Playable.Play(state,0.25f,FadeMode.FromStart);

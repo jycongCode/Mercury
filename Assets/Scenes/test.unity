@@ -35205,10 +35205,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 652ac5987f0854483933cbf95e3290d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IdleClip: {fileID: 7400000, guid: 0fa48e07fc94a4246b4dfa5e4f28ff26, type: 2}
-  WalkClip: {fileID: 7400000, guid: f51b126982b87864c9917d3fe266656c, type: 2}
-  Speed: 0
-  Mask: {fileID: 31900000, guid: 132fc3e31c6a1d541a95aace229d77de, type: 2}
+  param: 0
+  clips:
+  - {fileID: 7400000, guid: 0fa48e07fc94a4246b4dfa5e4f28ff26, type: 2}
+  - {fileID: 7400000, guid: f51b126982b87864c9917d3fe266656c, type: 2}
 --- !u!95 &1384456994356517130
 Animator:
   serializedVersion: 5

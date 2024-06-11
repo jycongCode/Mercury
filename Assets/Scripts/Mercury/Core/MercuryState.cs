@@ -70,10 +70,13 @@ public abstract class MercuryState : MercuryNode, IUpdate
 
     public bool Update()
     {
+        PreFrameProcess();
         UpdateWeight();
         OnStop();
         return _Weight > 0f;
     }
+
+    public virtual void PreFrameProcess(){}
 
     public void UpdateWeight()
     {

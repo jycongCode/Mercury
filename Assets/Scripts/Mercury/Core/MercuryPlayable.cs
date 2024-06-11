@@ -51,8 +51,8 @@ public class MercuryPlayable:PlayableBehaviour
     }
 
     #region Play
-    public MercuryState Play(AnimationClip clip,float fadeDuration,FadeMode mode)
-        => BaseLayer.Play(clip, fadeDuration, mode);
+    public MercuryState Play(IParam parameter,float fadeDuration,FadeMode mode)
+        => BaseLayer.Play(parameter, fadeDuration, mode);
     
     public void Play(MercuryState state,float fadeDuration, FadeMode mode)
         =>_LayerList.GetLayer(state).Play(state, fadeDuration, mode);
