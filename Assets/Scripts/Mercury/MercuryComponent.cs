@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
-using TMPro;
 using UnityEngine;
 
 public class MercuryComponent : MonoBehaviour
@@ -23,6 +22,8 @@ public class MercuryComponent : MonoBehaviour
     }
 
     #region Play
+    public MercuryState Play(AnimationClip clip, float fadeDuration=0.25f,FadeMode mode=FadeMode.FromStart)
+        => _Playable.Play(new MercuryClipStateParam(clip),fadeDuration, mode);
     public MercuryState Play(IParam parameter,float fadeDuration=0.25f,FadeMode mode = FadeMode.FromStart)
         => _Playable.Play(parameter,fadeDuration, mode);
 

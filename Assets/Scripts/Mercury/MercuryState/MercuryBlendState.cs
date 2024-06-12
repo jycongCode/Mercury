@@ -39,7 +39,7 @@ public class MercuryBlendState : MercuryState
         {
             _ClipsPlayable[i] = AnimationClipPlayable.Create(root.Graph, _Clips[i]);
             float w = i == 0 ? 1f : 0f;
-            PlayableHandle.AddInput(_ClipsPlayable[i], 0, w);
+            Root.Graph.Connect(_ClipsPlayable[i],0, PlayableHandle, i);
             _Weights[i] = w;
         }
     }

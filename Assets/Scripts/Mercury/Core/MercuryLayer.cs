@@ -12,29 +12,19 @@ public class MercuryLayer:MercuryNode,IUpdate
     public bool IsAdditive;
     private float _Weight;
     public float Weight { get => _Weight; }
+
+    private MercuryStateFactory _StateFactory;
     public MercuryLayer(MercuryPlayable root,string name,int portNum,AvatarMask mask=null,bool isAdditive=false) : base(root,name,portNum)
     {
         PlayableHandle = AnimationMixerPlayable.Create(root.Graph,portNum);
         Mask = mask;
         IsAdditive = isAdditive;
         _Weight = 1f;
+        _StateFactory = new MercuryStateFactory(root);
     }
 
     #region State Management
-    public MercuryState CreateState(IParam parameter, string name) 
-    {
-        switch(parameter.Type)
-        {
-            case StateType.ClipState:
-                return new MercuryClipState(parameter, Root);
-            case StateType.BlendState:
-                return new MercuryBlendState(parameter, Root);
-            default:
-                return null;
-        }
-    }
-
-
+    public MercuryState CreateState(IParam parameter, string name) => _StateFactory.CreateState(parameter,name);
 
     public int AddState(MercuryState state)
     {

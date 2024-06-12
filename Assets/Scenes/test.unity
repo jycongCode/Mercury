@@ -35186,6 +35186,7 @@ GameObject:
   - component: {fileID: 1384456994356517130}
   - component: {fileID: 1384456994356517128}
   - component: {fileID: 1384456994356517131}
+  - component: {fileID: 1384456994356517132}
   m_Layer: 0
   m_Name: Mon_00
   m_TagString: Untagged
@@ -35209,6 +35210,7 @@ MonoBehaviour:
   clips:
   - {fileID: 7400000, guid: 0fa48e07fc94a4246b4dfa5e4f28ff26, type: 2}
   - {fileID: 7400000, guid: f51b126982b87864c9917d3fe266656c, type: 2}
+  boom: {fileID: 7400000, guid: 5a61c6b823361c04981d820d46ab2549, type: 2}
 --- !u!95 &1384456994356517130
 Animator:
   serializedVersion: 5
@@ -35243,6 +35245,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Animator: {fileID: 1384456994356517130}
+--- !u!114 &1384456994356517132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384456994356517127}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36113bb6e1ad3aa4cb737ea8e2c3ad62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  idleClip: {fileID: 7400000, guid: 0fa48e07fc94a4246b4dfa5e4f28ff26, type: 2}
+  walkClip: {fileID: 7400000, guid: f51b126982b87864c9917d3fe266656c, type: 2}
+  Param: 0
 --- !u!1 &1384479670264966995
 GameObject:
   m_ObjectHideFlags: 0

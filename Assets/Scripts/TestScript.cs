@@ -11,6 +11,7 @@ public class TestScript : MonoBehaviour
     [Range(0,1)]
     public float param;
     public AnimationClip[] clips;
+    public AnimationClip boom;
     MercuryBlendState blendState;
     MercuryBlendStateParam blendParam;
     private void Awake()
@@ -25,7 +26,14 @@ public class TestScript : MonoBehaviour
     
     void Update()
     {
-        blendState.Parameter = param;
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            mercury.Play(boom);
+        }
+        else
+        {
+            blendState.Parameter = param;
+        }
     }
     
 }
