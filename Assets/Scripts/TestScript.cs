@@ -20,6 +20,11 @@ public class TestScript : MonoBehaviour
     }
     void Start()
     {
+        var curveBindings = UnityEditor.AnimationUtility.GetCurveBindings(clips[0]);
+        foreach(var binding in curveBindings)
+        {
+            Debug.Log($"{binding.path}--{binding.propertyName}");
+        }
         blendParam = new MercuryBlendStateParam(clips);
         blendState = mercury.Play(blendParam) as MercuryBlendState;
     }
