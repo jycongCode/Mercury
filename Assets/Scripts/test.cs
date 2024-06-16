@@ -90,9 +90,9 @@ namespace Mercury_MM{
                         pVelocity.Add((posePosition[j] - lastP[j]) / clip.frameRate);
                     }
                     if (i == 1)
-                        PoseDatabase[0] = new Pose(PoseDatabase[0].Positions, PoseDatabase[0].Rotations, pVelocity.ToArray(), 0, 0);
+                        PoseDatabase[0].pVelocity = pVelocity.ToArray();
                 }
-                PoseDatabase.Add(new Pose(posePosition.ToArray(), poseRotation.ToArray(), pVelocity.ToArray(), 0, frameNum));
+                //PoseDatabase.Add(new Pose(posePosition.ToArray(), poseRotation.ToArray(), pVelocity.ToArray(), 0, frameNum));
             }
             if (clip.isLooping)
             {
@@ -103,7 +103,7 @@ namespace Mercury_MM{
                 {
                     pv.Add((PoseDatabase[0].Positions[j] - lastP[j]) / clip.frameRate);
                 }
-                PoseDatabase[0] = new Pose(PoseDatabase[0].Positions, PoseDatabase[0].Rotations, pv.ToArray(), 0, frameNum);
+                PoseDatabase[0].pVelocity = pv.ToArray();
             }
         }
 
@@ -113,18 +113,25 @@ namespace Mercury_MM{
         }
     }
 
-    public struct Pose
-    {
+    public class Pose
+    {   
+        // pelvis lf rf
         public Vector3[] Positions;
         public Quaternion[] Rotations;
         public Vector3[] pVelocity;
+
+        //trajectory
+        public Vector2[] fPosition;
+        public Vector2[] fRotation;
         public int ClipIndex;
         public int FrameIndex;
-        public Pose(Vector3[] position, Quaternion[] rotation,Vector3[] pv,int clipIndex,int frameIndex)
+        public Pose(Vector3[] position, Quaternion[] rotation,Vector3[] pv,Vector2[] fp,Vector2[] fr,int clipIndex,int frameIndex)
         {
             Positions = position;
             Rotations = rotation;
             pVelocity = pv;
+            fPosition = fp;
+            fRotation = fr;
             ClipIndex = clipIndex;
             FrameIndex = frameIndex;
         }
