@@ -52,7 +52,7 @@ public abstract class MercuryNode
         _Nodes.Add(port, node);
     }
 
-    public void RemoveChildren(MercuryNode node)
+    public virtual void RemoveChildren(MercuryNode node)
     {
         Root.Graph.Disconnect(PlayableHandle, node.Port);
         _Children.Remove(node);
@@ -67,7 +67,7 @@ public abstract class MercuryNode
         }
     }
 
-    public void SetChildWeight(int port,float weight)
+    public virtual void SetChildWeight(int port,float weight)
     {
         if (_Nodes.ContainsKey(port))
         {

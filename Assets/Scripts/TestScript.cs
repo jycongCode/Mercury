@@ -13,7 +13,8 @@ public class TestScript : MonoBehaviour
     public float param;
     public AnimationClip[] clips;
     public AnimationClip boom;
-    MercuryState state;
+    MercuryState state1;
+    MercuryState state2;
     MercuryBlendState blendState;
     MercuryBlendStateParam blendParam;
     private void Awake()
@@ -35,18 +36,20 @@ public class TestScript : MonoBehaviour
             var value = curve.Evaluate((i + 1) * 0.03f);
             Debug.Log(value);
         }
-        
-        //foreach(var binding in curveBindings)
-        //{
-        //    Debug.Log($"{binding.path}--{binding.propertyName}");
-        //}
-        //blendParam = new MercuryBlendStateParam(clips);
-        //blendState = mercury.Play(blendParam) as MercuryBlendState;
-        state = mercury.Play(clips[1]);
+        state1 = mercury.Play(clips[0]);
     }
    
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            state2 = mercury.Play(clips[1],2f);
+        }
+
+        if(state2 != null)
+        {
+            state2.Speed = param;
+        }
 
     }
     

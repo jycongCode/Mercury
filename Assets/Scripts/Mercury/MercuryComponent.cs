@@ -26,9 +26,8 @@ public class MercuryComponent : MonoBehaviour
         => _Playable.Play(new MercuryClipStateParam(clip),fadeDuration, mode);
     public MercuryState Play(IParam parameter,float fadeDuration=0.25f,FadeMode mode = FadeMode.FromStart)
         => _Playable.Play(parameter,fadeDuration, mode);
-
     public void Play(MercuryState state)
         => _Playable.Play(state,0.25f,FadeMode.FromStart);
-    public MercuryLayer CreateLayer(string name, AvatarMask mask, bool isAdditive) => _Playable.CreateLayer(name, mask, isAdditive);
+    public MercuryLayer CreateLayer(string name, AvatarMask mask, bool isAdditive) => _Playable.CreateLayer(_Animator,name, mask, isAdditive);
     #endregion
 }

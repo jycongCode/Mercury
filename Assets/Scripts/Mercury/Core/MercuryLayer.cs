@@ -14,9 +14,9 @@ public class MercuryLayer:MercuryNode,IUpdate
     public float Weight { get => _Weight; }
 
     private MercuryStateFactory _StateFactory;
-    public MercuryLayer(MercuryPlayable root,string name,int portNum,AvatarMask mask=null,bool isAdditive=false) : base(root,name,portNum)
+    public MercuryLayer(Animator animator,MercuryPlayable root,string name,int portNum,AvatarMask mask=null,bool isAdditive=false) : base(root,name,portNum)
     {
-        PlayableHandle = AnimationMixerPlayable.Create(root.Graph,portNum);
+        PlayableHandle = MercuryMixerPlayable.Create(root.Graph,animator,portNum);
         Mask = mask;
         IsAdditive = isAdditive;
         _Weight = 1f;
@@ -112,5 +112,13 @@ public class MercuryLayer:MercuryNode,IUpdate
         }
         return true;
     }
-    
+
+    public override void SetChildWeight(int port, float weight)
+        =>MercuryMixerPlayable.SetInputWeight((AnimationScriptPlayable)PlayableHandle, port, weight);
+
+    public override void RemoveChildren(MercuryNode node)
+    {
+        base.RemoveChildren(node);
+        MercuryMixerPlayable.ClearInput((AnimationScriptPlayable)PlayableHandle, node.Port);
+    }
 }

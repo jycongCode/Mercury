@@ -11,7 +11,7 @@ public class MercuryLayerList : MercuryNode,IUpdate
         PlayableHandle = AnimationLayerMixerPlayable.Create(Root.Graph, portNum);
     }
 
-    public MercuryLayer CreateLayer(string name,AvatarMask mask=null,bool isAdditive=false)
+    public MercuryLayer CreateLayer(Animator animator,string name,AvatarMask mask=null,bool isAdditive=false)
     {
         var port = FindAvailablePort();
         if (port == -1)
@@ -19,7 +19,7 @@ public class MercuryLayerList : MercuryNode,IUpdate
             Debug.LogWarning($"Layer {name} creation failed");
             return null;
         }
-        var layer = new MercuryLayer(Root, name, 4,mask,isAdditive);
+        var layer = new MercuryLayer(animator,Root, name, 4,mask,isAdditive);
         layer.Port = port;
         return layer;
     }

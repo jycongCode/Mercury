@@ -18,6 +18,7 @@ public class MercuryPlayable:PlayableBehaviour
 
     private float _DeltaTime = 0f;
     public float DeltaTime { get => _DeltaTime; }
+
     private MercuryLayerList _LayerList;
     private static readonly MercuryPlayable Template = new MercuryPlayable();
     public static MercuryPlayable Create()
@@ -33,8 +34,6 @@ public class MercuryPlayable:PlayableBehaviour
         _Graph = playable.GetGraph();
         _LayerList = new MercuryLayerList(this,"LayerList",4);
         Graph.Connect(_LayerList.PlayableHandle, 0, playable, 0);
-        _BaseLayer = _LayerList.CreateLayer("BaseLayer");
-        _LayerList.AddLayer(BaseLayer);
     }
 
     public override void PrepareFrame(Playable playable, FrameData info)
@@ -48,6 +47,8 @@ public class MercuryPlayable:PlayableBehaviour
     {
         _Output = AnimationPlayableOutput.Create(_Graph, "AnimationOutput", animator);
         _Output.SetSourcePlayable(RootPlayable);
+        _BaseLayer = _LayerList.CreateLayer(animator,"BaseLayer");
+        _LayerList.AddLayer(BaseLayer);
     }
 
     #region Play
@@ -57,7 +58,7 @@ public class MercuryPlayable:PlayableBehaviour
     public void Play(MercuryState state,float fadeDuration, FadeMode mode)
         =>_LayerList.GetLayer(state).Play(state, fadeDuration, mode);
 
-    public MercuryLayer CreateLayer(string name, AvatarMask mask, bool isAdditive) => _LayerList.CreateLayer(name, mask, isAdditive);
+    public MercuryLayer CreateLayer(Animator animator,string name, AvatarMask mask, bool isAdditive) => _LayerList.CreateLayer(animator,name, mask, isAdditive);
     #endregion
     public void DestroyGraph()
     {
