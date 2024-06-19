@@ -39,4 +39,10 @@ public class MercuryMixerPlayable
         playable.SetJobData(job);
     }
     public static void ClearInput(AnimationScriptPlayable playable,int port)=>SetInputWeight(playable,port,0f);
+    public static void Dispose(AnimationScriptPlayable playable)
+    {
+        var job = playable.GetJobData<MercuryMixerJob>();
+        job.weights.Dispose();
+        job.handles.Dispose();
+    }
 }

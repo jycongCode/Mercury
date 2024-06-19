@@ -12,6 +12,7 @@ public abstract class MercuryNode
     protected MercuryNode _Parent;
     public MercuryPlayable Root;
     protected List<MercuryNode> _Children;
+    public List<MercuryNode> Children { get => _Children; }
     protected Dictionary<int,MercuryNode> _Nodes;
     protected readonly int _InputPortNum;
     public int Port = -1;

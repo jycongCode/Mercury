@@ -74,5 +74,7 @@ crashlytics-build.properties
 # Arts resource
 /[Aa]ssets/[Aa]rts/*
 
+# Resources
+/[Rr]esources/
 # Plugins
 /[Pp]lugins/*

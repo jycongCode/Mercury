@@ -6,7 +6,7 @@ using UnityEngine.Animations;
 using System.Reflection;
 using Unity.VisualScripting;
 
-public class MercuryPlayable:PlayableBehaviour
+public class MercuryPlayable:PlayableBehaviour,IDispose
 {
     private PlayableGraph _Graph;
     public PlayableGraph Graph { get => _Graph; }
@@ -61,7 +61,25 @@ public class MercuryPlayable:PlayableBehaviour
     public MercuryLayer CreateLayer(Animator animator,string name, AvatarMask mask, bool isAdditive) => _LayerList.CreateLayer(animator,name, mask, isAdditive);
     #endregion
     public void DestroyGraph()
-    {
+    { 
         _Graph.Destroy();
+    }
+
+    public void ClearMemory(MercuryNode node)
+    {
+        if(node is IDispose)
+        {
+            (node as IDispose).Dispose();
+        }
+        foreach(var n in node.Children)
+        {
+            ClearMemory(n);
+        }
+        return;
+    }
+
+    public void Dispose()
+    {
+        ClearMemory(_LayerList);
     }
 }

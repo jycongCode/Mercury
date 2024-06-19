@@ -9,6 +9,7 @@ public class MercuryComponent : MonoBehaviour
     [SerializeField, Tooltip("Animator to controll the gameobject")]
     private Animator _Animator;
     private MercuryPlayable _Playable;
+    private Transform _GameObject;
     private void OnEnable()
     {
         _Playable = MercuryPlayable.Create();
@@ -18,9 +19,9 @@ public class MercuryComponent : MonoBehaviour
 
     private void OnDisable()
     {
+        _Playable.Dispose();
         _Playable.DestroyGraph();
     }
-
     #region Play
     public MercuryState Play(AnimationClip clip, float fadeDuration=0.25f,FadeMode mode=FadeMode.FromStart)
         => _Playable.Play(new MercuryClipStateParam(clip),fadeDuration, mode);

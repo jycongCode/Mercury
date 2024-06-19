@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-public class MercuryLayer:MercuryNode,IUpdate
+public class MercuryLayer:MercuryNode,IUpdate,IDispose
 {
     public AvatarMask Mask;
     public bool IsAdditive;
@@ -120,5 +120,10 @@ public class MercuryLayer:MercuryNode,IUpdate
     {
         base.RemoveChildren(node);
         MercuryMixerPlayable.ClearInput((AnimationScriptPlayable)PlayableHandle, node.Port);
+    }
+
+    public void Dispose()
+    {
+        MercuryMixerPlayable.Dispose((AnimationScriptPlayable)PlayableHandle);
     }
 }
